@@ -66,3 +66,18 @@ function personToTable(person) {
   personTable.replaceChildren(nameRow, taskFormRow, ...taskRows);
   return personTable;
 }
+
+function makePartyButtons() {
+  // Not counting the first one you can't remove
+  const partySize = gameState.people.length - 1;
+  const maxPartySize = settings.partyNames.length;
+  const addButton = qe.button("+1", () => {
+    addPerson(settings.partyNames[partySize]);
+    render();
+  }, partySize >= maxPartySize);
+  const removeButton = qe.button("-1", () => {
+    gameState.people.pop();
+    render();
+  }, partySize < 1);
+  return wrap("p", addButton, qe.br(), removeButton);
+}

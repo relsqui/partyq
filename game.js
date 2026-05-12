@@ -34,7 +34,7 @@ function render() {
   const clockBar = wrap("p", gameState.tick, " ", makeClockButton(), " ", gameState.status);
   const logPane = tableWrap(gameState.log.slice(-10).map(l => [l]));
   const peoplePane = tableWrap([gameState.people.map(p => personToTable(p))]);
-  const mainView = tableWrap([[peoplePane, logPane]]);
+  const mainView = tableWrap([[peoplePane, makePartyButtons(), logPane]]);
   logPane.children[0].setAttribute("valign", "top");
   peoplePane.children[0].setAttribute("valign", "top");
   mainView.children[0].setAttribute("valign", "top");
@@ -42,7 +42,7 @@ function render() {
 }
 
 function start() {
-  const startingPeople = ["Adam"];
+  const startingPeople = ["Sun"];
   startingPeople.map(addPerson);
   startClock();
 }

@@ -26,7 +26,7 @@ function checkAutoPause() {
     stopClock(`Empty queues:${emptyQueues.join(", ")}`);
   } else if (!(intervalClock || emptyQueues.length)) {
     if (manuallyPaused) {
-      stopClock("Manual", true)
+      stopClock("Manual", true);
     } else {
       startClock();
     }

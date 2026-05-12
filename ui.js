@@ -22,10 +22,12 @@ function tableWrap(rows) {
 
 // quick elements
 const qe = {
-  button: (label = "", onClick = () => {}) => {
+  br: () => createElementWithAttrs("br"),
+  button: (label = "", onClick = null, disabled = false) => {
     const b = createElementWithAttrs("button");
     b.replaceChildren(label);
-    b.addEventListener("click", onClick);
+    if (onClick) b.addEventListener("click", onClick);
+    if (disabled) b.setAttribute("disabled", true);
     return b;
-  }
+  },
 };
