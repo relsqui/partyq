@@ -2,12 +2,18 @@ const tasks = {
   get_sticks: {
     name: "Pick up sticks",
     duration: 5,
-    fn: (person) => addLog(`${person.name} found some sticks.`),
+    fn: (person) => {
+      addLog(`${person.name} found some sticks.`);
+      giveItem(person, "stick", 1);
+    },
   },
   get_grass: {
     name: "Gather grass",
     duration: 10,
-    fn: (person) => addLog(`${person.name} gathered some grass.`),
+    fn: (person) => {
+      addLog(`${person.name} gathered some grass.`);
+      giveItem(person, "grass", 1);
+    },
   }
 };
 

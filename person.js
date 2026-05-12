@@ -1,7 +1,8 @@
 function makePerson(name) {
   return {
     name,
-    tasks: []
+    tasks: [],
+    inventory: [],
   };
 }
 
@@ -18,6 +19,10 @@ function removeTask(person, task) {
   }
   checkAutoPause();
   render();
+}
+
+function giveItem(person, item, count) {
+  person.inventory[item] = Math.max(0, (person.inventory[item] || 0) + count);
 }
 
 function updatePerson(person, updateQueue) {
@@ -46,6 +51,11 @@ function personToTable(person) {
   nameCell.replaceChildren(person.name);
   const nameRow = createElementWithAttrs("tr", { align: "center" });
   nameRow.replaceChildren(nameCell);
+  const invText = Object.entries(person.inventory)
+    .filter(([item, count]) => count > 0)
+    .map(([item, count]) => `${count} ${item}`)
+    .join(", ");
+  const invRow = wrap("tr", wrap("td", invText));
   const taskFormCell = createElementWithAttrs("td", { colspan: 3 });
   taskFormCell.replaceChildren(makeTaskForm(person));
   const taskFormRow = createElementWithAttrs("tr", { align: "center" });
@@ -63,7 +73,7 @@ function personToTable(person) {
     }))
     return taskRow;
   })
-  personTable.replaceChildren(nameRow, taskFormRow, ...taskRows);
+  personTable.replaceChildren(nameRow, invRow, taskFormRow, ...taskRows);
   return personTable;
 }
 
