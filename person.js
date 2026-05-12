@@ -52,10 +52,12 @@ function personToTable(person) {
   const nameRow = createElementWithAttrs("tr", { align: "center" });
   nameRow.replaceChildren(nameCell);
   const invText = Object.entries(person.inventory)
-    .filter(([item, count]) => count > 0)
-    .map(([item, count]) => `${count} ${item}`)
+    .filter(([_, count]) => count > 0)
+    .map(([item, count]) => count == 1 ? item : `${item} x${count}`)
     .join(", ");
-  const invRow = wrap("tr", wrap("td", invText));
+  const invCell = createElementWithAttrs("td", { colspan: 3 });
+  invCell.replaceChildren(invText);
+  const invRow = wrap("tr", invCell);
   const taskFormCell = createElementWithAttrs("td", { colspan: 3 });
   taskFormCell.replaceChildren(makeTaskForm(person));
   const taskFormRow = createElementWithAttrs("tr", { align: "center" });
