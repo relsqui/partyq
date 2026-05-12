@@ -31,7 +31,7 @@ function updatePerson(person, updateQueue) {
     if (currentTask.loop) {
       currentTask.duration = tasks[currentTask.taskKey].duration;
     } else {
-      person.tasks.pop();
+      person.tasks.splice(0, 1);
     }
   }
 }

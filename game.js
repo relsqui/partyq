@@ -42,7 +42,7 @@ function render() {
 }
 
 function start() {
-  const startingPeople = ["Adam", "Eve"];
+  const startingPeople = ["Adam"];
   startingPeople.map(addPerson);
   startClock();
 }

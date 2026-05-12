@@ -1,10 +1,6 @@
 let intervalClock = null;
 let manuallyPaused = false;
 
-function clockRunning() {
-  return !!intervalClock;
-}
-
 function startClock() {
   setStatus("Running");
   if (intervalClock == null) {
@@ -25,13 +21,12 @@ function stopClock(reason, manual = false) {
 }
 
 function checkAutoPause() {
-  console.log("Checking queues")
   const emptyQueues = gameState.people.filter(p => p.tasks.length == 0).map(p => p.name);
   if (emptyQueues.length) {
     stopClock(`Empty queues:${emptyQueues.join(", ")}`);
-  } else if (!(clockRunning() || emptyQueues.length)) {
+  } else if (!(intervalClock || emptyQueues.length)) {
     if (manuallyPaused) {
-      stopClock("Manual")
+      stopClock("Manual", true)
     } else {
       startClock();
     }
