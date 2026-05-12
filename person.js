@@ -21,8 +21,36 @@ function removeTask(person, task) {
   render();
 }
 
+function itemCount(person, item) {
+  return person.inventory[item] || 0;
+}
+
 function giveItem(person, item, count) {
-  person.inventory[item] = Math.max(0, (person.inventory[item] || 0) + count);
+  person.inventory[item] = Math.max(0, itemCount(person, item) + count);
+}
+
+function payCost(person, item, count) {
+  if (itemCount(person, item) < count) {
+    return false;
+  }
+  giveItem(person, item, count * -1);
+  return true;
+}
+
+
+function payCosts(person, costs = {}) {
+  for (const [item, count] of Object.entries(costs)) {
+    payCost(person, item, count);
+  }
+}
+
+function canPayCosts(person, costs = {}, multiple = 1) {
+  for (const [item, count] of Object.entries(costs)) {
+    if (itemCount(person, item) < count * multiple) {
+      return false;
+    }
+  }
+  return true;
 }
 
 function updatePerson(person, updateQueue) {
@@ -32,8 +60,16 @@ function updatePerson(person, updateQueue) {
   const currentTask = person.tasks[0];
   currentTask.duration--;
   if (currentTask.duration < 1) {
-    updateQueue.push({ fn: () => currentTask.fn(person) });
-    if (currentTask.loop) {
+    updateQueue.push({
+      fn: (...args) => {
+        if (canPayCosts(person, currentTask.costs)) {
+          payCosts(person, currentTask.costs);
+          currentTask.fn(person, ...args);
+        }
+      }
+    });
+    // We haven't paid for the current one yet, we just queued it
+    if (currentTask.loop && canPayCosts(person, currentTask.costs, 2)) {
       currentTask.duration = tasks[currentTask.taskKey].duration;
     } else {
       person.tasks.splice(0, 1);

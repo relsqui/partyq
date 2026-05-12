@@ -1,3 +1,4 @@
 const settings = {
-  partyNames: ["Mercury", "Venus", "Earth", "Mars"]
+  clockSpeed: 200,
+  partyNames: ["Mercury", "Venus", "Earth", "Mars"],
 }

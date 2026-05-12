@@ -4,7 +4,7 @@ let manuallyPaused = false;
 function startClock() {
   setStatus("Running");
   if (intervalClock == null) {
-    intervalClock = setInterval(() => { update(); render(); }, 1000);
+    intervalClock = setInterval(() => { update(); render(); }, settings.clockSpeed);
     manuallyPaused = false;
     render();
   }
