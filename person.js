@@ -1,6 +1,7 @@
-function makePerson(name) {
+function makePerson(name, locationKey = "riverbank") {
   return {
     name,
+    location: locations[locationKey],
     tasks: [],
     inventory: [],
   };
@@ -62,14 +63,14 @@ function updatePerson(person, updateQueue) {
   if (currentTask.duration < 1) {
     updateQueue.push({
       fn: (...args) => {
-        if (canPayCosts(person, currentTask.costs)) {
+        if (canStartTask(person, currentTask)) {
           payCosts(person, currentTask.costs);
           currentTask.fn(person, ...args);
         }
       }
     });
     // We haven't paid for the current one yet, we just queued it
-    if (currentTask.loop && canPayCosts(person, currentTask.costs, 2)) {
+    if (currentTask.loop && canStartTask(person, currentTask)) {
       currentTask.duration = tasks[currentTask.taskKey].duration;
     } else {
       person.tasks.splice(0, 1);
@@ -84,13 +85,13 @@ function personToTable(person) {
     cellspacing: 0
   });
   const nameCell = createElementWithAttrs("td", { colspan: 3 });
-  nameCell.replaceChildren(person.name);
+  nameCell.replaceChildren(`${person.name} (${person.location.name})`);
   const nameRow = createElementWithAttrs("tr", { align: "center" });
   nameRow.replaceChildren(nameCell);
   const invText = Object.entries(person.inventory)
     .filter(([_, count]) => count > 0)
     .map(([item, count]) => count == 1 ? item : `${item} x${count}`)
-    .join(", ");
+    .join(", ") || "Empty pockets.";
   const invCell = createElementWithAttrs("td", { colspan: 3 });
   invCell.replaceChildren(invText);
   const invRow = wrap("tr", invCell);
@@ -110,7 +111,7 @@ function personToTable(person) {
       return cell;
     }))
     return taskRow;
-  })
+  });
   personTable.replaceChildren(nameRow, invRow, taskFormRow, ...taskRows);
   return personTable;
 }
