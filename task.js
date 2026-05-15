@@ -55,13 +55,30 @@ function canStartTask(person, task) {
   return canPayCosts(person, task.costs) && prereqs(person);
 }
 
+function getTask(person, taskKey) {
+  if (tasks[taskKey]) return tasks[taskKey];
+  const [dynamicTask, ...args] = taskKey.split(":");
+  const dynamicTaskFns = {
+    travel: makeTravelTask,
+  };
+  const taskFn = dynamicTaskFns[dynamicTask];
+  return taskFn ? taskFn(person, ...args) : undefined;
+}
+
 function makeTaskForm(person) {
   const localGathers = person.location.gatherTasks.reduce((options, taskKey) => {
     options[taskKey] = tasks[taskKey]
     return options
   }, {});
+  const travelTasks = getTravelDestinations(person).reduce((tasksByDest, dest) => {
+    // there is for sure a more elegant way to do this,
+    // right now we're creating the task once here and then again at call time
+    tasksByDest[`travel:${dest}`] = makeTravelTask(person, dest);
+    return tasksByDest;
+  }, {});
   const taskOptions = Object.entries(localGathers)
     .concat(Object.entries(otherTasks))
+    .concat(Object.entries(travelTasks))
     .filter(([_, task]) => canStartTask(person, task))
     .map(([key, task]) => {
       const taskOpt = createElementWithAttrs("option", { value: key });

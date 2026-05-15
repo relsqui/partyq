@@ -8,7 +8,7 @@ function makePerson(name, locationKey = "riverbank") {
 }
 
 function addTask(person, taskKey, loop) {
-  person.tasks.push({ ...tasks[taskKey], loop, taskKey });
+  person.tasks.push({ ...getTask(person, taskKey), loop, taskKey });
   checkAutoPause();
   render();
 }
