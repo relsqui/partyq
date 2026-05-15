@@ -85,13 +85,13 @@ function personToTable(person) {
     cellspacing: 0
   });
   const nameCell = createElementWithAttrs("td", { colspan: 3 });
-  nameCell.replaceChildren(`${person.name} (${person.location.name})`);
+  nameCell.replaceChildren(wrap("h3", person.name), person.location.name);
   const nameRow = createElementWithAttrs("tr", { align: "center" });
   nameRow.replaceChildren(nameCell);
   const invText = Object.entries(person.inventory)
     .filter(([_, count]) => count > 0)
     .map(([item, count]) => count == 1 ? item : `${item} x${count}`)
-    .join(", ") || "Empty pockets.";
+    .join(", ") || "Empty hands.";
   const invCell = createElementWithAttrs("td", { colspan: 3 });
   invCell.replaceChildren(invText);
   const invRow = wrap("tr", invCell);
